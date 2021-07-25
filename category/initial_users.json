@@ -1,0 +1,11 @@
+{
+  "names": [
+    "Doctor",
+    "Nurse",
+    "Pharmacist",
+    "Laboratorist",
+    "Accountant",
+    "Patient",
+    "Admin"
+  ]
+}
