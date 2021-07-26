@@ -10,11 +10,18 @@ from .serializers import (
   AddDepartmentSerializer,
 )
 from .models import Departments
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+# from drf_yasg.utils import swagger_auto_schema
+# from drf_yasg import openapi
+from drf_spectacular.utils import (
+  extend_schema,
+  inline_serializer,
+  # OpenApiParameter, 
+  # OpenApiExample
+)
+# from drf_spectacular.types import OpenApiTypes
 
 # Create your views here.
-@api_view(http_method_names=["POST"])
+@api_view(http_method_names=["GET"])
 @permission_classes((IsAuthenticated,))
 def list_departments(request):
   """List all the departments in the departments table"""
@@ -22,28 +29,45 @@ def list_departments(request):
   # print(f"type is: {type(data)} and data is {data}")
   return Response({"departments": data})
 
-name_param = openapi.Parameter(
-  'name', 
-  openapi.IN_QUERY, 
-  description="Name of department", 
-  type=openapi.TYPE_STRING,
-  required=True
-)
-desc_param = openapi.Parameter(
-  'description', 
-  openapi.IN_QUERY, 
-  description="Description of the department", 
-  type=openapi.TYPE_STRING,
-  required=True
-)
+# name_param = openapi.Parameter(
+#   'name', 
+#   openapi.IN_QUERY, 
+#   description="Name of department", 
+#   type=openapi.TYPE_STRING,
+#   required=True
+# )
+# desc_param = openapi.Parameter(
+#   'description', 
+#   openapi.IN_QUERY, 
+#   description="Description of the department", 
+#   type=openapi.TYPE_STRING,
+#   required=True
+# )
 @permission_classes((IsAuthenticated,))
+# @extend_schema(request=None, responses=AddDepartmentSerializer(many=True))
+@extend_schema( 
+  parameters=[
+    AddDepartmentSerializer,  # serializer fields are converted to parameters
+    # OpenApiParameter("nested", AddDepartmentSerializer),  # serializer object is converted to a parameter
+  ], 
+  request=AddDepartmentSerializer,
+  responses={
+    200: inline_serializer(
+      name="details",
+      fields={
+        "tombra": "ebi",
+      }
+    ),
+    400: "detail: error",
+  }
+)
 @api_view(http_method_names=["POST"])
-@swagger_auto_schema(
+# @swagger_auto_schema(
   # manual_parameters=[name_param, desc_param], 
   # responses={
   #   200: "Successfully added a new department"
   # },
-  request_body=AddDepartmentSerializer,
+  # request_body=AddDepartmentSerializer,
   # request_body=openapi.Schema(
   #   type=openapi.TYPE_OBJECT,
   #   properties={
@@ -54,7 +78,7 @@ desc_param = openapi.Parameter(
   #   }
   # ),
   # operation_id="add_department",
-)
+# )
 def add_department(request):
   """
   Adds a department to the departments table
@@ -70,7 +94,6 @@ def add_department(request):
       serializer.save()
       return Response(serializer.data)
     else:
-
       raise Exception
   except Exception as error:
     print(f"Error: no json data from client!\n", error)

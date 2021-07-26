@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
-    "drf_yasg",
+    # "drf_yasg",
+    "drf_spectacular",
     "api",
     "account",
     "category",
@@ -119,19 +120,27 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Swagger documentation
-SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'Auth token eg [Bearer (JWT)]': {
-            'type': 'apiKey',
-            "name": "Authorization",
-            "in": "header",
-        }
-    },
+# Drf-spectacular documentation
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Hospital Management System API',
+    'DESCRIPTION': 'This api gives a summary of all the apis and how to use them.',
+    'VERSION': f"{config('VERSION', default='1.0.0')}.0.0",
+    # OTHER SETTINGS
 }
+# Swagger documentation
+# SWAGGER_SETTINGS = {
+#     'SECURITY_DEFINITIONS': {
+#         'Auth token eg [Bearer (JWT)]': {
+#             'type': 'apiKey',
+#             "name": "Authorization",
+#             "in": "header",
+#         }
+#     },
+# }
 
 # Simple jwt settings
 SIMPLE_JWT = {

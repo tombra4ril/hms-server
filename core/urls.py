@@ -15,36 +15,48 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from decouple import config
 
 # Add swagger documentation
 from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+# from drf_yasg.views import get_schema_view
+# from drf_yasg import openapi
 
 #for version 1
 version = "v1"
 
-schema_view = get_schema_view(
-   openapi.Info(
-      title="Hospital Management API",
-      default_version='v1',
-      description="Api description",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="tombra4ril@gmail.com"),
-      license=openapi.License(name="TombraIncorp License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
-)
+# schema_view = get_schema_view(
+#    openapi.Info(
+#       title="Hospital Management API",
+#       default_version='v1',
+#       description="Api description",
+#       terms_of_service="https://www.google.com/policies/terms/",
+#       contact=openapi.Contact(email="tombra4ril@gmail.com"),
+#       license=openapi.License(name="TombraIncorp License"),
+#    ),
+#    public=True,
+#    permission_classes=(permissions.AllowAny,),
+# )
 
 urlpatterns = [
-#    path(r'doc', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-#    path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-   path(f'api/{version}/docs', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    # YOUR PATTERNS
+    # path(f'api/{version}/docs', SpectacularAPIView.as_view(), name=f'{version}/docs'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional UI:
+    path(f"api/v{config('VERSION', default='1')}/docs", SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    # path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    # path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
+
+# urlpatterns = [
+# #    path(r'doc', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+# #    path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+#    path(f'api/{version}/docs', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+# ]
 urlpatterns += [
     path('admin', admin.site.urls),
-    path(f"api/{version}/category", include("category.urls")),
-    path(f"api/{version}/auth", include("api.urls")),
-    path(f"api/{version}/departments", include("departments.urls"))
+    path(f"api/v{config('VERSION', default='1')}/category", include("category.urls")),
+    path(f"api/v{config('VERSION', default='1')}/auth", include("api.urls")),
+    path(f"api/v{config('VERSION', default='1')}/departments", include("departments.urls"))
 ]
