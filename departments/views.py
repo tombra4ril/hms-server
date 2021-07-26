@@ -16,13 +16,16 @@ from drf_spectacular.utils import (
   extend_schema,
   inline_serializer,
   # OpenApiParameter, 
-  # OpenApiExample
+  OpenApiExample
 )
-# from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.types import OpenApiTypes
 
 # Create your views here.
-@api_view(http_method_names=["GET"])
+@extend_schema( 
+  responses=AddDepartmentSerializer,
+)
 @permission_classes((IsAuthenticated,))
+@api_view(http_method_names=["GET"])
 def list_departments(request):
   """List all the departments in the departments table"""
   data = list_departments_serializer()
@@ -44,41 +47,33 @@ def list_departments(request):
 #   required=True
 # )
 @permission_classes((IsAuthenticated,))
-# @extend_schema(request=None, responses=AddDepartmentSerializer(many=True))
 @extend_schema( 
   parameters=[
     AddDepartmentSerializer,  # serializer fields are converted to parameters
-    # OpenApiParameter("nested", AddDepartmentSerializer),  # serializer object is converted to a parameter
   ], 
   request=AddDepartmentSerializer,
   responses={
-    200: inline_serializer(
-      name="details",
-      fields={
-        "tombra": "ebi",
-      }
+    200: OpenApiTypes.OBJECT,
+    400: OpenApiTypes.OBJECT,
+  },
+  examples=[
+    OpenApiExample(
+      "Success",
+      description="Completed successfully",
+      value={"detail": "success"},
+      response_only=True,
+      status_codes=["200"],
     ),
-    400: "detail: error",
-  }
+    OpenApiExample(
+      "Failure",
+      description="Error, failed",
+      value={"detail": "error"},
+      response_only=True,
+      status_codes=["400"],
+    )
+  ]
 )
 @api_view(http_method_names=["POST"])
-# @swagger_auto_schema(
-  # manual_parameters=[name_param, desc_param], 
-  # responses={
-  #   200: "Successfully added a new department"
-  # },
-  # request_body=AddDepartmentSerializer,
-  # request_body=openapi.Schema(
-  #   type=openapi.TYPE_OBJECT,
-  #   properties={
-  #     "name": openapi.Schema(
-  #       type=openapi.TYPE_STRING,
-  #       description="Name of department"
-  #     )
-  #   }
-  # ),
-  # operation_id="add_department",
-# )
 def add_department(request):
   """
   Adds a department to the departments table
