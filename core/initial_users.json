@@ -1,0 +1,20 @@
+{
+  "names": [
+    "Patient",
+    "Doctor",
+    "Nurse",
+    "Pharmacist",
+    "Laboratorist",
+    "Accountant",
+    "Admin"
+  ],
+  "initials": [
+    "patient",
+    "doctor",
+    "nurse",
+    "pharmacist",
+    "laboratorist",
+    "accountant",
+    "admin"
+  ]
+}

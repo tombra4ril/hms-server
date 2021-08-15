@@ -3,6 +3,48 @@
 """
 from datetime import datetime, timedelta
 from decouple import config
+import json
+from pathlib import Path
+
+base_dir = Path(__file__).resolve().parent
+
+def get_category():
+  """
+    Reads in and return the categories to be stored in the database
+  """
+  return json.loads(open(base_dir / "initial_users.json").read())
+
+def get_category_names():
+  """
+    Returns only the names of all the category
+  """
+  json_object = json.loads(open(base_dir / "initial_users.json").read())
+  return json_object["names"]
+
+def get_category_initials():
+  """
+    Returns only the initials of all the category
+  """
+  json_object = json.loads(open(base_dir / "initial_users.json").read())
+  return json_object["initials"]
+
+def get_category_name_from_initials(name=""):
+  """
+    Returns a initial from the name passed as argument
+    ______________________________________
+    name: Required - This is the only argument supplied to return the initials
+  """
+  index = None
+  name = name.lower()
+  if(name == ""):
+    return index
+  else:
+    names = get_category_names()
+    for _, __ in enumerate(names):
+      if(__.lower() == name):
+        index = _
+        break
+    return get_category_initials()[index]
 
 def token_time(time, type="", add=0):
   """ Computes timedelta depending on the type(access token or refresh token) and time (in seconds, minutes or hours)

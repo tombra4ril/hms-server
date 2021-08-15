@@ -40,7 +40,7 @@ APPEND_SLASH = False
 # Application definition
 INSTALLED_APPS = [
     "rest_framework",
-    "rest_framework_simplejwt.token_blacklist",
+    "rest_framework_simplejwt",
     "corsheaders",
     # "drf_yasg",
     "drf_spectacular",
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "account",
     "category",
     "departments",
+    "doctors",
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -115,22 +116,23 @@ TEMPLATES = [
 
 # Rest framework settings
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # Drf-spectacular documentation
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Hospital Management System API',
     'DESCRIPTION': 'This api gives a summary of all the apis and how to use them.',
-    'VERSION': f"{config('VERSION', default='1.0.0')}.0.0",
+    'VERSION': f"{config('VERSION', default='1.0.0')}.{config('VERSION_MAJOR', default='0')}.{config('VERSION_MINOR', default='0')}",
     # OTHER SETTINGS
 }
+
 # Swagger documentation
 # SWAGGER_SETTINGS = {
 #     'SECURITY_DEFINITIONS': {
@@ -168,7 +170,7 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': None,
 
-    'AUTH_HEADER_TYPES': ('JWT',),
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'uuid',
     'USER_ID_CLAIM': 'uuid',
@@ -183,6 +185,14 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+# Email configuration
+EMAIL_HOST = config("EMAIL_HOST", default="localhost")
+EMAIL_PORT = config("EMAIL_PORT", default="8001")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="webmaster4tombra@gmail.com")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="asdf;lkj")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default="False", cast=bool)
+# EMAIL_USE_SSL = config("EMAIL_USE_SSL", default="False", cast=bool)
 
 WSGI_APPLICATION = 'core.wsgi.application'
 

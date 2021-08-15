@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from decouple import config
 
+# views
+from .views import doctor_patient_nurse_count
+
 # Add swagger documentation
 from rest_framework import permissions
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
@@ -41,12 +44,9 @@ version = "v1"
 
 urlpatterns = [
     # YOUR PATTERNS
-    # path(f'api/{version}/docs', SpectacularAPIView.as_view(), name=f'{version}/docs'),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     # Optional UI:
     path(f"api/v{config('VERSION', default='1')}/docs", SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
 # urlpatterns = [
@@ -56,7 +56,9 @@ urlpatterns = [
 # ]
 urlpatterns += [
     path('admin', admin.site.urls),
+    path(f"api/v{config('VERSION', default='1')}/doctor_patient_nurse", doctor_patient_nurse_count,  name="doctor_patient_nurse_count"),
     path(f"api/v{config('VERSION', default='1')}/category", include("category.urls")),
     path(f"api/v{config('VERSION', default='1')}/auth", include("api.urls")),
-    path(f"api/v{config('VERSION', default='1')}/departments", include("departments.urls"))
+    path(f"api/v{config('VERSION', default='1')}/departments", include("departments.urls")),
+    path(f"api/v{config('VERSION', default='1')}/doctors", include("doctors.urls"))
 ]
